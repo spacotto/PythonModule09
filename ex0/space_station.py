@@ -73,16 +73,17 @@ def main():
 
     if sys.prefix == sys.base_prefix:
         print(color(5, ' ERROR! You must use a venv!'))
-        print(' Run the following commands:')
+        print(' Help:')
         print(' python3 -m venv .venv')
         print(' source .venv/bin/activate')
         print(' pip install -r requirements.txt')
 
     else:
-        print(color(6, ' Space Station Data Validation'))
+        print(color(3, ' Space Station Data Validation'))
         print(' ' + '=' * 40)
 
         try:
+            # Create a valid space station instance
             v = SpaceStation(
                 station_id='ISS001',
                 name='International Space Station',
@@ -92,8 +93,10 @@ def main():
                 last_maintenance='2026-04-13T12:00:00',
                 )
 
-            print(color(7, ' Valid station created!'))
+            print(color(6, ' Valid station created!'))
             print()
+
+            # Display the station information clearly
             print(f' {color(7, "ID"):<20}{v.station_id}')
             print(f' {color(7, "Name"):<20}{v.name}')
             print(f' {color(7, "Crew"):<20}{v.crew_size} people')
@@ -116,16 +119,18 @@ def main():
 
         print(color(7, ' Expected validation error:'))
 
+        # Attempt to create an invalid station
         try:
             SpaceStation(
-                station_id="STATION",
-                name="Overcrowded Outpost",
+                station_id="..",
+                name=".",
                 crew_size=25,
-                power_level=50.0,
-                oxygen_level=50.0,
+                power_level=-50.0,
+                oxygen_level=-50.0,
                 last_maintenance=datetime.now()
             )
 
+        # Show the validation error message
         except ValidationError as e:
             for error in e.errors():
                 print(color(5, ' ERROR!' + f' {error["msg"]}'))
