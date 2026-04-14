@@ -71,13 +71,35 @@ class Stations(Enum):
     SN7 = ('SWM', 'Solar Wind Monitor')
     SN8 = ('QCH', 'Quantum Communications Hub')
 
+
 class Notes(Enum):
-    NOMINAL = "All systems operating within normal parameters."
-    RESUPPLY = "Awaiting cargo resupply shuttle."
-    METEOROID = "Minor hull scouring detected."
-    SOLAR_FLARE = "Increased radiation levels."
-    GRAVITY_LEAK = "Gravitational leak detected."
-    ALIEN_CONTACT = "Unidentified signal pattern detected."
+    NOMINAL = 'All systems operating within normal parameters.'
+    RESUPPLY = 'Awaiting cargo resupply shuttle.'
+    METEOROID = 'Minor hull scouring detected.'
+    SOLAR_FLARE = 'Increased radiation levels.'
+    GRAVITY_LEAK = 'Gravitational leak detected.'
+    ALIEN_CONTACT = 'Unidentified signal pattern detected.'
+
+
+class Locations(Enum):
+    L0 = 'Area 51, Nevada'
+    L1 = 'Roswell, New Mexico'
+    L2 = 'SETI Institute, California'
+    L3 = 'Arecibo Observatory, Puerto Rico'
+    L4 = 'Atacama Desert, Chile'
+    L5 = 'Antarctic Research Station'
+    L6 = 'International Space Station'
+    L7 = 'Mauna Kea Observatory, Hawaii'
+    L8 = 'Very Large Array, New Mexico'
+
+
+class Messages(Enum):
+    M0 = 'Greetings from Zeta Reticuli'
+    M1 = 'Mathematical sequence detected: prime numbers'
+    M2 = 'Coordinates to star system received'
+    M3 = 'Warning about solar flare activity'
+    M4 = 'Request for peaceful contact'
+    M5 = 'Unknown language pattern identified'
 
 
 # ----------------------------------------------------------------------------
