@@ -254,8 +254,55 @@ class CosmicData:
     def alien_contact_logs(self) -> None:
 
         try:
-            add_exercise_folder_to_path("ex0")
-            from space_station import (AlienContact, ContactType)
+            add_exercise_folder_to_path("ex1")
+            from alien_contact import (AlienContact, ContactType)
+
+            print()
+            print(" " + "-" * 60)
+            print(color(3, ' 💫 Exercise 1: Alien Contact Logs'))
+            print(" " + "-" * 60)
+
+            try:
+                year = random.randint(1900, 2026)
+                n = random.randint(1, 100)
+                ac = AlienContact(
+                    contact_id=f'AC_{year}_{n:03d}',
+                    timestamp=datetime.now(),
+                    location=random.choice(list(Locations)).value,
+                    contact_type=random.choice(list(ContactType)),
+                    signal_strength=random.uniform(0.0, 10.0),
+                    duration_minutes=random.randint(1, 1440),
+                    witness_count=random.randint(3, 100),
+                    message_received=random.choice(list(Messages)).value,
+                    is_verified=True
+                    )
+
+                print()
+                print(color(6, ' Testing VALID Contact Report'))
+                print(" " + "-" * 60)
+
+                for k, v in ac.model_dump().items():
+                    label = k.replace('_', ' ').title()
+
+                    if k == 'timestamp':
+                        display_value = v.strftime("%Y-%m-%d %H:%M:%S.%f")[:-5]
+                    elif k == 'contact_type':
+                        display_value = v.value
+                    elif k == 'signal_strength':
+                        display_value = f'{v:.1f}/10'
+                    elif k == 'duration_minutes':
+                        display_value = f'{v} minutes'
+                    else:
+                        display_value = str(v)
+
+                    print(f' {color(7, label):<30}{display_value}')
+
+                print()
+
+            except ValidationError as e:
+                for error in e.errors():
+                    print(color(5, ' ERROR!') + f' {error["msg"]}')
+                print()
 
         except ImportError as e:
             print(color(5, f' ERROR! Could not import Ex1 — {e}'))
