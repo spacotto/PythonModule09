@@ -190,7 +190,7 @@ class CosmicData:
                     crew_size=21,
                     power_level=100.1,
                     oxygen_level=100.1,
-                    last_maintenance=''
+                    last_maintenance=('1' * 1000)
                 )
 
             except ValidationError as e:

@@ -106,7 +106,7 @@ def main():
             if v.is_operational:
                 status = color(2, 'Operational')
             else:
-                status = color(1, 'Non-Operational')
+                status = color(3, 'Maintenance')
 
             print(f' {color(7, "Status"):<20}{status}')
 
@@ -121,14 +121,14 @@ def main():
 
         # Attempt to create an invalid station
         try:
-            SpaceStation(
-                station_id="..",
-                name=".",
+            v = SpaceStation(
+                station_id='ISS001',
+                name='International Space Station',
                 crew_size=25,
-                power_level=-50.0,
-                oxygen_level=-50.0,
-                last_maintenance=datetime.now()
-            )
+                power_level=85.5,
+                oxygen_level=92.3,
+                last_maintenance='2026-04-13T12:00:00',
+                )
 
         # Show the validation error message
         except ValidationError as e:
