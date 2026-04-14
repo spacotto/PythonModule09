@@ -46,7 +46,7 @@ def color(code: int, text: str) -> str:
 
 
 # ----------------------------------------------------------------------------
-#  Find folders
+#   Pathfinder
 # ----------------------------------------------------------------------------
 
 def add_exercise_folder_to_path(folder_name: str) -> None:
@@ -61,15 +61,23 @@ def add_exercise_folder_to_path(folder_name: str) -> None:
 # ----------------------------------------------------------------------------
 
 class Stations(Enum):
-    SN1 = ('ISS', 'International Space Station')
-    SN2 = ('LGW', 'Lunar Gateway')
-    SN3 = ('MOP', 'Mars Orbital Platform')
-    SN4 = ('ERS', 'Europa Research Station')
-    SN5 = ('TMO', 'Titan Mining Outpost')
-    SN6 = ('ABR', 'Asteroid Belt Relay')
-    SN7 = ('DSO', 'Deep Space Observatory')
-    SN8 = ('SWM', 'Solar Wind Monitor')
-    SN9 = ('QCH', 'Quantum Communications Hub')
+    SN0 = ('ISS', 'International Space Station')
+    SN1 = ('LGW', 'Lunar Gateway')
+    SN2 = ('MOP', 'Mars Orbital Platform')
+    SN3 = ('ERS', 'Europa Research Station')
+    SN4 = ('TMO', 'Titan Mining Outpost')
+    SN5 = ('ABR', 'Asteroid Belt Relay')
+    SN6 = ('DSO', 'Deep Space Observatory')
+    SN7 = ('SWM', 'Solar Wind Monitor')
+    SN8 = ('QCH', 'Quantum Communications Hub')
+
+class Notes(Enum):
+    NOMINAL = "All systems operating within normal parameters."
+    RESUPPLY = "Awaiting cargo resupply shuttle."
+    METEOROID = "Minor hull scouring detected."
+    SOLAR_FLARE = "Increased radiation levels."
+    GRAVITY_LEAK = "Gravitational leak detected."
+    ALIEN_CONTACT = "Unidentified signal pattern detected."
 
 
 # ----------------------------------------------------------------------------
@@ -121,38 +129,48 @@ class CosmicData:
 
             print()
             print(" " + "-" * 60)
-            print(color(7, ' 💫 Exercise 0: Space Station Data'))
+            print(color(3, ' 💫 Exercise 0: Space Station Data'))
             print(" " + "-" * 60)
 
             # --- Testing valid station
             try:
                 station = random.choice(list(Stations)).value
                 station_number = random.randint(1, 100)
-                v = SpaceStation(
+                ss = SpaceStation(
                     station_id=f'{station[0]}{station_number:03d}',
                     name=station[1],
                     crew_size=random.randint(1, 20),
                     power_level=random.uniform(0.0, 100.0),
                     oxygen_level=random.uniform(0.0, 100.0),
                     last_maintenance=datetime.now(),
-                    is_operational=random.choice([True, False])
-                    )
+                    is_operational=random.choice([True, False]),
+                    notes=(random.choice(list(Notes)).value),
+                )
 
                 print()
                 print(color(6, ' Testing VALID Station'))
                 print(" " + "-" * 60)
-                print(f' {color(7, "ID"):<20}{v.station_id}')
-                print(f' {color(7, "Name"):<20}{v.name}')
-                print(f' {color(7, "Crew"):<20}{v.crew_size} people')
-                print(f' {color(7, "Power"):<20}{v.power_level:.1f}%')
-                print(f' {color(7, "Oxygen"):<20}{v.oxygen_level:.1f}%')
 
-                if v.is_operational:
-                    status = color(2, 'Operational')
-                else:
-                    status = color(3, 'Maintenance')
+                for k, v in ss.model_dump().items():
+                    label = k.replace('_', ' ').title()
 
-                print(f' {color(7, "Status"):<20}{status}')
+                    if k == 'crew_size':
+                        display_value = f'{v} people'
+                    elif k == 'power_level' or k == 'oxygen_level':
+                        display_value = f'{v:.1f}%'
+                    elif k == 'last_maintenance':
+                        display_value = v.strftime("%Y-%m-%d %H:%M:%S.%f")[:-5]
+                    elif k == 'is_operational':
+                        if v:
+                            display_value = color(2, 'Operational')
+                        else:
+                            display_value = color(3, 'Maintenance')
+                    else:
+                        display_value = str(v)
+
+                    print(f' {color(7, label):<30}{display_value}')
+
+
                 print()
 
             except ValidationError as e:
@@ -171,7 +189,9 @@ class CosmicData:
                     crew_size=0,
                     power_level=-1.0,
                     oxygen_level=-1.0,
-                    last_maintenance=''
+                    last_maintenance='',
+                    is_operational='',
+                    notes=-1,
                 )
 
             except ValidationError as e:
@@ -190,7 +210,9 @@ class CosmicData:
                     crew_size=21,
                     power_level=100.1,
                     oxygen_level=100.1,
-                    last_maintenance=('1' * 1000)
+                    last_maintenance=('1' * 1000),
+                    is_operational='',
+                    notes=('.' * 201),
                 )
 
             except ValidationError as e:
