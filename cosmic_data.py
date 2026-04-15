@@ -259,9 +259,10 @@ class CosmicData:
 
             print()
             print(" " + "-" * 60)
-            print(color(3, ' 💫 Exercise 1: Alien Contact Logs'))
+            print(color(7, ' 👽 Exercise 1: Alien Contact Logs'))
             print(" " + "-" * 60)
 
+            # --- Testing valid contact
             try:
                 year = random.randint(1900, 2026)
                 n = random.randint(1, 100)
@@ -292,12 +293,61 @@ class CosmicData:
                         display_value = f'{v:.1f}/10'
                     elif k == 'duration_minutes':
                         display_value = f'{v} minutes'
+                    elif k == 'is_verified':
+                        if v:
+                            display_value = color(2, 'Verified')
+                        else:
+                            display_value = color(3, 'Unverified')
                     else:
                         display_value = str(v)
 
                     print(f' {color(7, label):<30}{display_value}')
 
                 print()
+
+            except ValidationError as e:
+                for error in e.errors():
+                    print(color(5, ' ERROR!') + f' {error["msg"]}')
+                print()
+
+            # --- Testing < min
+            try:
+                print(color(5, ' Testing INVALID contact (min edge cases)'))
+                print(" " + "-" * 60)
+
+                ac = AlienContact(
+                    contact_id=('.' * 4),
+                    timestamp='',
+                    location=('.' * 2),
+                    contact_type='',
+                    signal_strength=-0.1,
+                    duration_minutes=0,
+                    witness_count=0,
+                    message_received='',
+                    is_verified=''
+                    )
+
+            except ValidationError as e:
+                for error in e.errors():
+                    print(color(5, ' ERROR!') + f' {error["msg"]}')
+                print()
+
+            # --- Testing > max
+            try:
+                print(color(5, ' Testing INVALID contact (max edge cases)'))
+                print(" " + "-" * 60)
+
+                ac = AlienContact(
+                    contact_id=('.' * 16),
+                    timestamp='',
+                    location=('.' * 101),
+                    contact_type='',
+                    signal_strength=10.1,
+                    duration_minutes=1441,
+                    witness_count=101,
+                    message_received=('.' * 501),
+                    is_verified=''
+                    )
 
             except ValidationError as e:
                 for error in e.errors():
