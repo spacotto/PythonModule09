@@ -102,6 +102,69 @@ class Messages(Enum):
     M5 = 'Unknown language pattern identified'
 
 
+class FirstName(Enum):
+    SARAH = "Sarah"
+    JOHN = "John"
+    ALICE = "Alice"
+    MICHAEL = "Michael"
+    EMMA = "Emma"
+    DAVID = "David"
+    LISA = "Lisa"
+    ROBERT = "Robert"
+    MARIA = "Maria"
+    JAMES = "James"
+    ANNA = "Anna"
+    WILLIAM = "William"
+    ELENA = "Elena"
+    THOMAS = "Thomas"
+    SOFIA = "Sofia"
+    DANIEL = "Daniel"
+
+
+class LastName(Enum):
+    CONNOR = "Connor"
+    SMITH = "Smith"
+    JOHNSON = "Johnson"
+    WILLIAMS = "Williams"
+    BROWN = "Brown"
+    JONES = "Jones"
+    GARCIA = "Garcia"
+    MILLER = "Miller"
+    DAVIS = "Davis"
+    RODRIGUEZ = "Rodriguez"
+    MARTINEZ = "Martinez"
+    HERNANDEZ = "Hernandez"
+    LOPEZ = "Lopez"
+    GONZALEZ = "Gonzalez"
+
+
+class Specialization(Enum):
+    MISSION_COMMAND = "Mission Command"
+    NAVIGATION = "Navigation"
+    ENGINEERING = "Engineering"
+    LIFE_SUPPORT = "Life Support"
+    COMMUNICATIONS = "Communications"
+    MEDICAL_OFFICER = "Medical Officer"
+    PILOT = "Pilot"
+    SCIENCE_OFFICER = "Science Officer"
+    MAINTENANCE = "Maintenance"
+    SECURITY = "Security"
+    RESEARCH = "Research"
+    SYSTEMS_ANALYSIS = "Systems Analysis"
+
+
+class Destination(Enum):
+    MARS = "Mars"
+    MOON = "Moon"
+    EUROPA = "Europa"
+    TITAN = "Titan"
+    ASTEROID_BELT = "Asteroid Belt"
+    JUPITER_ORBIT = "Jupiter Orbit"
+    SATURN_RINGS = "Saturn Rings"
+    DEEP_SPACE = "Deep Space"
+    SOLAR_OBSERVATORY = "Solar Observatory"
+
+
 # ----------------------------------------------------------------------------
 #  Interactive tester UI
 # ---------------------------------------------------------------------------
@@ -367,6 +430,13 @@ class CosmicData:
 
         try:
             add_exercise_folder_to_path("ex2")
+            from space_crew import (SpaceMission, CrewMember, Rank)
+
+            print()
+            print(" " + "-" * 60)
+            print(color(4, ' 🚀 Exercise 2: Space Crew Management'))
+            print(" " + "-" * 60)
+
 
         except ImportError as e:
             print(color(5, f' ERROR! Could not import Ex2 — {e}'))
