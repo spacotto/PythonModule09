@@ -39,7 +39,7 @@ try:
     import sys
     from pydantic import BaseModel, Field, ValidationError, model_validator
     from datetime import datetime
-    from typing import List, Optional, Self
+    from typing import List
     from enum import Enum
 
 except ModuleNotFoundError as e:
@@ -86,7 +86,7 @@ class SpaceMission(BaseModel):
     budget_millions: float = Field(ge=1.0, le=10000.0)
 
     @model_validator(mode='after')
-    def validate_mission_rules(self) -> Self:
+    def validate_mission_rules(self) -> "SpaceMission":
 
         # Mission ID must start with "M"
         if not self.mission_id.startswith("M"):
@@ -97,10 +97,11 @@ class SpaceMission(BaseModel):
                           for member in self.crew)
 
         if not has_command:
-            raise ValueError('Mission must have at least one Commander or Captain')
+            raise ValueError('Mission must have at least '
+                             'one Commander or Captain')
 
         # Long missions (> 365 days) need 50% experienced crew (5+ years)
-        if duration_days > 365:
+        if self.duration_days > 365:
             ec = sum(1 for member in self.crew if member.years_experience >= 5)
             if ec / len(self.crew) < 0.5:
                 raise ValueError('Long missions (> 365 days) need '
@@ -113,6 +114,7 @@ class SpaceMission(BaseModel):
                                  ' All crew members must be active')
 
         return self
+
 
 def main() -> None:
     print()
@@ -153,17 +155,17 @@ def main() -> None:
                                        years_experience=3,
                                        is_active=True)
 
-            crew_list: List[CrewMember] = [sarah_connor,
-                                           john_smith,
-                                           alice_johnson]
+            valid_crew: List[CrewMember] = [sarah_connor,
+                                            john_smith,
+                                            alice_johnson]
 
             sm = SpaceMission(
                     mission_id='M2024_MARS',
                     mission_name='Mars Colony Establishment',
                     destination='Mars',
                     launch_date=datetime.now(),
-                    duration_day=900,
-                    crew=crew_list,
+                    duration_days=900,
+                    crew=valid_crew,
                     mission_status='',
                     budget_millions=2500.0,
                     )
@@ -172,10 +174,13 @@ def main() -> None:
             print(f' {color(7, "Mission"):<25}{sm.mission_name}')
             print(f' {color(7, "ID"):<25}{sm.mission_id}')
             print(f' {color(7, "Destination"):<25}{sm.destination}')
-            print(f' {color(7, "Duration"):<25}{sm.duration_day}')
-            print(f' {color(7, "Budget"):<25}{sm.budget_millions}')
+            print(f' {color(7, "Duration"):<25}{sm.duration_days} days')
+            print(f' {color(7, "Budget"):<25}${sm.budget_millions:.1f}M')
             print(f' {color(7, "Crew size"):<25}{len(sm.crew)}')
-            print(f' {color(7, "Crew members")}')
+            print(f' {color(7, "Crew members:")}')
+            for member in sm.crew:
+                print(f' - {member.name} ({member.rank.value})'
+                      f' - {member.specialization}')
 
         except ValidationError as e:
             for error in e.errors():
@@ -187,15 +192,15 @@ def main() -> None:
 
         try:
 
-            crew_list: List[CrewMember] = [alice_johnson]
+            invalid_crew: List[CrewMember] = [alice_johnson]
 
             SpaceMission(
                     mission_id='M2024_MARS',
                     mission_name='Mars Colony Establishment',
                     destination='Mars',
                     launch_date=datetime.now(),
-                    duration_day=900,
-                    crew=crew_list,
+                    duration_days=900,
+                    crew=invalid_crew,
                     mission_status='',
                     budget_millions=2500.0,
                     )
