@@ -150,6 +150,7 @@ def main() -> None:
                     duration_minutes=45,
                     witness_count=2,
                     message_received='Greetings from Zeta Reticuli',
+                    is_verified='True',
                     )
 
         except ValidationError as e:
