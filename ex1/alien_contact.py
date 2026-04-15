@@ -39,7 +39,7 @@ try:
     import sys
     from pydantic import BaseModel, Field, ValidationError, model_validator
     from datetime import datetime
-    from typing import Optional, Self
+    from typing import Optional
     from enum import Enum
 
 except ModuleNotFoundError as e:
@@ -76,7 +76,7 @@ class AlienContact(BaseModel):
     is_verified: bool = Field(default=False)
 
     @model_validator(mode='after')
-    def validate_cosmic_rules(self) -> Self:
+    def validate_cosmic_rules(self) -> 'AlienContact':
         if not self.contact_id.startswith("AC"):
             raise ValueError('Contact ID must start with "AC" Alien Contact')
 
@@ -150,7 +150,7 @@ def main() -> None:
                     duration_minutes=45,
                     witness_count=2,
                     message_received='Greetings from Zeta Reticuli',
-                    is_verified='True',
+                    is_verified=True,
                     )
 
         except ValidationError as e:
