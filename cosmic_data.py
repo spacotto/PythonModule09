@@ -437,6 +437,18 @@ class CosmicData:
             print(color(4, ' 🚀 Exercise 2: Space Crew Management'))
             print(" " + "-" * 60)
 
+            # --- Testing VALID Mission
+            try:
+                sm = SpaceMission(
+                    mission_id=random.choice(list()),
+                    mission_name='Mars Colony Establishment',
+                    destination='Mars',
+                    launch_date=datetime.now(),
+                    duration_days=900,
+                    crew=valid_crew,
+                    mission_status='',
+                    budget_millions=2500.0,
+                    )
 
         except ImportError as e:
             print(color(5, f' ERROR! Could not import Ex2 — {e}'))
