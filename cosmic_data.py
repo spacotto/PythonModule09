@@ -181,6 +181,16 @@ class Missions(Enum):
 class SpaceStationData():
 
     def __init__(self) -> None:
+
+        try:
+            add_exercise_folder_to_path("ex0")
+            from space_station import (SpaceStation)
+
+        except ImportError as e:
+            print(color(5, f' ERROR! Could not import Ex0 — {e}'))
+        except Exception as e:
+            print(color(5, f' ERROR! {e}'))
+
         self._station_id: str = None
         self._name: str = None
         self._crew_size: int = None
@@ -193,8 +203,6 @@ class SpaceStationData():
     def run_test(self) -> None:
         """Run one valid test and one invalid test"""
         try:
-            add_exercise_folder_to_path("ex0")
-            from space_station import (SpaceStation)
 
             print()
             print(" " + "-" * 60)
@@ -213,8 +221,6 @@ class SpaceStationData():
             self._invalid_test()
             self.space_station_data()
 
-        except ImportError as e:
-            print(color(5, f' ERROR! Could not import Ex0 — {e}'))
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
 
@@ -261,46 +267,52 @@ class SpaceStationData():
 
     def _valid_test(self) -> None:
 
-        station = random.choice(list(Stations)).value
-        self._station_id = f'{station[0]}{random.randint(1, 100):03d}'
-        self._name = station[1]
-        self._crew_size = random.randint(1, 20)
-        self._power_level = random.uniform(0.0,1 100.0)
-        self._oxygen_level = random.uniform(0.0, 100.0)
-        self._last_maintenance = datetime.now()
-        self._is_operational = random.choice([True, False])
-        self._notes = (random.choice(list(Notes)).value)
+        try:
+            station = random.choice(list(Stations)).value
+            self._station_id = f'{station[0]}{random.randint(1, 100):03d}'
+            self._name = station[1]
+            self._crew_size = random.randint(1, 20)
+            self._power_level = random.uniform(0.0,1 100.0)
+            self._oxygen_level = random.uniform(0.0, 100.0)
+            self._last_maintenance = datetime.now()
+            self._is_operational = random.choice([True, False])
+            self._notes = (random.choice(list(Notes)).value)
+
+        except Exception as e:
+            print(color(5, f' ERROR! {e}'))
 
     def _invalid_test(self) -> None:
 
-        if random.choice([True, False]):
-            self._station_id = ('.' * random.randint(0, 2))
-        else:
-            self._station_id = ('.' * random.randint(11, 100))
+        try:
+            if random.choice([True, False]):
+                self._station_id = ('.' * random.randint(0, 2))
+            else:
+                self._station_id = ('.' * random.randint(11, 100))
 
-        if random.choice([True, False]):
-            self._name = ''
-        else:
-            self._name = ('.' * random.randint(51, 100))
+            if random.choice([True, False]):
+                self._name = ''
+            else:
+                self._name = ('.' * random.randint(51, 100))
 
-        if random.choice([True, False]):
-            self._crew_size = random.randint(-100, 0)
-        else:
-            self._crew_size = random.randint(21, 100)
+            if random.choice([True, False]):
+                self._crew_size = random.randint(-100, 0)
+            else:
+                self._crew_size = random.randint(21, 100)
 
-        if random.choice([True, False]):
-            self._power_level = random.uniform(-100.0, -0.1)
-        else:
-            self._power_level = random.uniform(100.1, 200.0)
+            if random.choice([True, False]):
+                self._power_level = random.uniform(-100.0, -0.1)
+            else:
+                self._power_level = random.uniform(100.1, 200.0)
 
-        if random.choice([True, False]):
-            self._oxygen_level = random.uniform(-100.0, -0.1)
-        else:
-            self._oxygen_level = random.uniform(100.1, 200.0)
+            if random.choice([True, False]):
+                self._oxygen_level = random.uniform(-100.0, -0.1)
+            else:
+                self._oxygen_level = random.uniform(100.1, 200.0)
 
-        self._last_maintenance = ''
-        self._is_operational = ''
-        self._notes = random.randint('.' * random.randint(201, 300))
+            self._notes = random.randint('.' * random.randint(201, 300))
+
+        except Exception as e:
+            print(color(5, f' ERROR! {e}'))
 
 
 # ----------------------------------------------------------------------------
@@ -309,113 +321,144 @@ class SpaceStationData():
 
 class AlienContactLogs():
 
-    def alien_contact_logs(self) -> None:
+    def __init__(self) -> None:
 
         try:
             add_exercise_folder_to_path("ex1")
             from alien_contact import (AlienContact, ContactType)
 
+        except ImportError as e:
+            print(color(5, f' ERROR! Could not import Ex1 — {e}'))
+        except Exception as e:
+            print(color(5, f' ERROR! {e}'))
+
+        self._contact_id: str = None
+        self._timestamp: datetime = None
+        self._location: str = None
+        self._contact_type: ContactType = None
+        self._signal_strength: float = None
+        self._duration_minutes: int = None)
+        self._witness_count: int = None
+        self._message_received: str = None
+        self._is_verified: bool = None
+
+    def run_test(self) -> None:
+        """Run one valid test and one invalid test"""
+
+        try:
             print()
             print(" " + "-" * 60)
             print(color(7, ' 👽 Exercise 1: Alien Contact Logs'))
             print(" " + "-" * 60)
 
-            # --- Testing valid contact
-            try:
-                year = random.randint(1900, 2026)
-                n = random.randint(1, 100)
-                ac = AlienContact(
-                    contact_id=f'AC_{year}_{n:03d}',
-                    timestamp=datetime.now(),
-                    location=random.choice(list(Locations)).value,
-                    contact_type=random.choice(list(ContactType)),
-                    signal_strength=random.uniform(0.0, 10.0),
-                    duration_minutes=random.randint(1, 1440),
-                    witness_count=random.randint(3, 100),
-                    message_received=random.choice(list(Messages)).value,
-                    is_verified=True
-                    )
+            print()
+            print(color(6, ' Testing Valid Contact'))
+            print(" " + "-" * 60)
+            self._valid_test()
+            self.alien_contact_logs()
 
-                print()
-                print(color(6, ' Testing VALID Contact Report'))
-                print(" " + "-" * 60)
+            print()
+            print(color(5, ' Testing Invalid Contact'))
+            print(" " + "-" * 60)
+            self._invalid_test()
+            self.alien_contact_logs()
 
-                for k, v in ac.model_dump().items():
-                    label = k.replace('_', ' ').title()
-
-                    if k == 'timestamp':
-                        display_value = v.strftime("%Y-%m-%d %H:%M:%S.%f")[:-5]
-                    elif k == 'contact_type':
-                        display_value = v.value
-                    elif k == 'signal_strength':
-                        display_value = f'{v:.1f}/10'
-                    elif k == 'duration_minutes':
-                        display_value = f'{v} minutes'
-                    elif k == 'is_verified':
-                        if v:
-                            display_value = color(2, 'Verified')
-                        else:
-                            display_value = color(3, 'Unverified')
-                    else:
-                        display_value = str(v)
-
-                    print(f' {color(7, label):<30}{display_value}')
-
-                print()
-
-            except ValidationError as e:
-                for error in e.errors():
-                    print(color(5, ' ERROR!') + f' {error["msg"]}')
-                print()
-
-            # --- Testing < min
-            try:
-                print(color(5, ' Testing INVALID contact (min edge cases)'))
-                print(" " + "-" * 60)
-
-                ac = AlienContact(
-                    contact_id=('.' * 4),
-                    timestamp='',
-                    location=('.' * 2),
-                    contact_type='',
-                    signal_strength=-0.1,
-                    duration_minutes=0,
-                    witness_count=0,
-                    message_received='',
-                    is_verified=''
-                    )
-
-            except ValidationError as e:
-                for error in e.errors():
-                    print(color(5, ' ERROR!') + f' {error["msg"]}')
-                print()
-
-            # --- Testing > max
-            try:
-                print(color(5, ' Testing INVALID contact (max edge cases)'))
-                print(" " + "-" * 60)
-
-                ac = AlienContact(
-                    contact_id=('.' * 16),
-                    timestamp='',
-                    location=('.' * 101),
-                    contact_type='',
-                    signal_strength=10.1,
-                    duration_minutes=1441,
-                    witness_count=101,
-                    message_received=('.' * 501),
-                    is_verified=''
-                    )
-
-            except ValidationError as e:
-                for error in e.errors():
-                    print(color(5, ' ERROR!') + f' {error["msg"]}')
-                print()
-
-        except ImportError as e:
-            print(color(5, f' ERROR! Could not import Ex1 — {e}'))
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
+
+    def alien_contact_logs(self) -> None:
+        """Try to print the content of the class"""
+        try:
+            ac = AlienContact(
+                contact_id=self._contact_id,
+                timestamp=self._timestamp,
+                location=self._location,
+                contact_type=self._contact_type,
+                signal_strength=self._signal_strength,
+                duration_minutes=self._duration_minutes,
+                witness_count=self._witness_count,
+                message_received=self._message_received,
+                is_verified=self._is_verified,
+            )
+
+            for k, v in ac.model_dump().items():
+                label = k.replace('_', ' ').title()
+
+                if k == 'timestamp':
+                    display_value = v.strftime("%Y-%m-%d %H:%M:%S.%f")[:-5]
+                elif k == 'contact_type':
+                    display_value = v.value
+                elif k == 'signal_strength':
+                    display_value = f'{v:.1f}/10'
+                elif k == 'duration_minutes':
+                    display_value = f'{v} minutes'
+                elif k == 'is_verified':
+                    if v:
+                        display_value = color(2, 'Verified')
+                    else:
+                        display_value = color(3, 'Unverified')
+                else:
+                    display_value = str(v)
+
+                print(f' {color(7, label):<30}{display_value}')
+
+            print()
+
+        except ValidationError as e:
+            for error in e.errors():
+                print(color(5, ' ERROR!') + f' {error["msg"]}')
+            print()
+
+    def _valid_test(self) -> None:
+
+        try:
+            self._contact_id = (f'AC_{random.randint(1900, 2026)}_'
+                               f'{random.randint(1, 100):03d}')
+            self._timestamp = datetime.now()
+            self._location = random.choice(list(Locations)).value
+            self._contact_type = random.choice(list(ContactType))
+            self._signal_strength = random.uniform(0.0, 10.0)
+            self._duration_minutes = random.randint(1, 1440)
+            self._witness_count = random.randint(3, 100)
+            self._message_received = random.choice(list(Messages)).value
+            self._is_verified = is_verified=True
+
+        except Exception as e:
+            print(color(5, f' ERROR! {e}'))
+
+    def _invalid_test(self) -> None:
+
+        try:
+            if random.choice([True, False]):
+                self._contact_id = ('.' * random.randint(0, 4))
+            else:
+                self._contact_id = ('.' * random.randint(16, 100))
+
+            if random.choice([True, False]):
+                self._location = ('.' * random.randint(0, 2))
+            else:
+                self._location = ('.' * random.randint(101, 200))
+
+            if random.choice([True, False]):
+                self._signal_strength = random.uniform(-100.0, -0.1)
+            else:
+                self._signal_strength = random.uniform(10.1, 100.0)
+
+            if random.choice([True, False]):
+                self._duration_minutes = random.randint(101, 200)
+            else:
+                self._duration_minutes = random.randint(1441, 1500)
+
+            if random.choice([True, False]):
+                self._witness_count = random.randint(-100, 0)
+            else:
+                self._witness_count = random.randint(101, 200)
+
+            self._message_received = ('.' * random.randint(501, 600))
+
+        except Exception as e:
+            print(color(5, f' ERROR! {e}'))
+
 
 # ----------------------------------------------------------------------------
 #  Exercise 2: Space Crew Management
@@ -423,18 +466,59 @@ class AlienContactLogs():
 
 class SpaceCrewManagement():
 
-    def space_crew_management(self) -> None:
+    def __init__(self) -> None:
 
         try:
             add_exercise_folder_to_path("ex2")
             from space_crew import (SpaceMission, CrewMember, Rank)
+
+        except ImportError as e:
+            print(color(5, f' ERROR! Could not import Ex2 — {e}'))
+        except Exception as e:
+            print(color(5, f' ERROR! {e}'))
+
+            mission_id: str = None
+            mission_name: str = None
+            destination: str = None
+            launch_date: datetime = None
+            duration_days: int = None
+            crew: List[CrewMember] = None
+            mission_status: str = None
+            budget_millions: float = None
+
+    def run_test(self) -> None:
+        """Run one valid test and one invalid test"""
+
+        try:
+            print()
+            print(" " + "-" * 60)
+            print(color(4, ' 🚀 Exercise 2: Space Crew Management'))
+            print(" " + "-" * 60)
+
+            print()
+            print(color(6, ' Testing Valid Mission'))
+            print(" " + "-" * 60)
+            self._valid_test()
+            self.space_crew_management()
+
+            print()
+            print(color(5, ' Testing Invalid Mission'))
+            print(" " + "-" * 60)
+            self._invalid_test()
+            self.space_crew_management()
+
+        except Exception as e:
+            print(color(5, f' ERROR! {e}'))
+
+    def space_crew_management(self) -> None:
+
+        try:
 
             print()
             print(" " + "-" * 60)
             print(color(4, ' 🚀 Exercise 2: Space Crew Management'))
             print(" " + "-" * 60)
 
-            # --- Testing VALID Mission
             try:
 
                 mission = random.choice(list(Missions))
