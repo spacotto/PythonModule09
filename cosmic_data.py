@@ -20,6 +20,25 @@ from datetime import datetime
 from pydantic import ValidationError
 
 
+def pathfinder(folder_name: str) -> None:
+    """Adds the specified exercise folder to the Python path."""
+    folder_path = os.path.join(os.path.dirname(__file__), folder_name)
+    if folder_path not in sys.path:
+        sys.path.insert(0, folder_path)
+
+
+FOLDERS: list = ['ex0', 'ex1', 'ex2']
+for F in FOLDERS:
+    try:
+        pathfinder(F)
+    except ImportError as e:
+        print(f' ERROR! Could not import  {F} — {e}')
+
+from space_station import (SpaceStation)
+from alien_contact import (AlienContact, ContactType)
+from space_crew import (SpaceMission, CrewMember, Rank)
+
+
 # ----------------------------------------------------------------------------
 #  Standard ANSI Color codes
 # ----------------------------------------------------------------------------
@@ -43,17 +62,6 @@ def color(code: int, text: str) -> str:
         color = colors[7]
 
     return f'{color}{text}{colors[0]}'
-
-
-# ----------------------------------------------------------------------------
-#   Pathfinder
-# ----------------------------------------------------------------------------
-
-def add_exercise_folder_to_path(folder_name: str) -> None:
-    """Adds the specified exercise folder to the Python path."""
-    folder_path = os.path.join(os.path.dirname(__file__), folder_name)
-    if folder_path not in sys.path:
-        sys.path.insert(0, folder_path)
 
 
 # ----------------------------------------------------------------------------
@@ -162,15 +170,15 @@ class Missions(Enum):
           'Europa Research Mission', 'Europa')
     M3 = (f'M{random.randint(1926,2026)}_TITAN',
           'Titan Colony Establishment', 'Titan')
-    M4 = (f'M{random.randint(1926,2026)}_ASTEROID_BELT',
+    M4 = (f'M{random.randint(1926,2026)}_AB',
           'Asteroid Belt Research Mission', 'Asteroid Belt')
-    M5 = (f'M{random.randint(1926,2026)}_JUPITER_ORBIT',
+    M5 = (f'M{random.randint(1926,2026)}_JO',
           'Jupiter Orbital Colony Establishment', 'Jupiter Orbit')
-    M6 = (f'M{random.randint(1926,2026)}_SATURN_RINGS',
+    M6 = (f'M{random.randint(1926,2026)}_SR',
           'Saturn Rings Research Mission', 'Saturn Rings')
-    M7 = (f'M{random.randint(1926,2026)}_DEEP_SPACE',
+    M7 = (f'M{random.randint(1926,2026)}_DS',
           'Deep Space Colony Establishment', 'Deep Space')
-    M8 = (f'M{random.randint(1926,2026)}_SOLAR_OBSERVATORY',
+    M8 = (f'M{random.randint(1926,2026)}_SO',
           'Solar Observatory Research Mission', 'Solar Observatory')
 
 
@@ -181,16 +189,6 @@ class Missions(Enum):
 class SpaceStationData():
 
     def __init__(self) -> None:
-
-        try:
-            add_exercise_folder_to_path("ex0")
-            from space_station import (SpaceStation)
-
-        except ImportError as e:
-            print(color(5, f' ERROR! Could not import Ex0 — {e}'))
-        except Exception as e:
-            print(color(5, f' ERROR! {e}'))
-
         self._station_id: str = None
         self._name: str = None
         self._crew_size: int = None
@@ -206,7 +204,7 @@ class SpaceStationData():
 
             print()
             print(" " + "-" * 60)
-            print(color(3, ' 💫 Exercise 0: Space Station Data'))
+            print(color(7, ' 💫 Exercise 0: Space Station Data'))
             print(" " + "-" * 60)
 
             print()
@@ -220,6 +218,14 @@ class SpaceStationData():
             print(" " + "-" * 60)
             self._invalid_test()
             self.space_station_data()
+
+            print()
+            print(color(3, ' Testing Station'))
+            print(" " + "-" * 60)
+            self._specific_test()
+            #self.space_station_data()
+            print(' Uncomment to use')
+            print()
 
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
@@ -258,12 +264,9 @@ class SpaceStationData():
 
                 print(f' {color(7, label):<30}{display_value}')
 
-            print()
-
         except ValidationError as e:
             for error in e.errors():
                 print(color(5, ' ERROR!') + f' {error["msg"]}')
-            print()
 
     def _valid_test(self) -> None:
 
@@ -309,10 +312,22 @@ class SpaceStationData():
             else:
                 self._oxygen_level = random.uniform(100.1, 200.0)
 
-            self._notes = random.randint('.' * random.randint(201, 300))
+            self._last_maintenance = None
+            self._is_operational = None
+            self._notes = ('.' * random.randint(201, 300))
 
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
+
+    def _specific_test(self) -> None:
+        self._station_id = None
+        self._name = None
+        self._crew_size = None
+        self._power_level = None
+        self._oxygen_level = None
+        self._last_maintenance = None
+        self._is_operational = None
+        self._notes = None
 
 
 # ----------------------------------------------------------------------------
@@ -322,16 +337,6 @@ class SpaceStationData():
 class AlienContactLogs():
 
     def __init__(self) -> None:
-
-        try:
-            add_exercise_folder_to_path("ex1")
-            from alien_contact import (AlienContact, ContactType)
-
-        except ImportError as e:
-            print(color(5, f' ERROR! Could not import Ex1 — {e}'))
-        except Exception as e:
-            print(color(5, f' ERROR! {e}'))
-
         self._contact_id: str = None
         self._timestamp: datetime = None
         self._location: str = None
@@ -362,6 +367,14 @@ class AlienContactLogs():
             print(" " + "-" * 60)
             self._invalid_test()
             self.alien_contact_logs()
+
+            print()
+            print(color(3, ' Testing Contact'))
+            print(" " + "-" * 60)
+            self._specific_test()
+            #self.alien_contact_logs()
+            print(' Uncomment to use')
+            print()
 
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
@@ -402,12 +415,9 @@ class AlienContactLogs():
 
                 print(f' {color(7, label):<30}{display_value}')
 
-            print()
-
         except ValidationError as e:
             for error in e.errors():
                 print(color(5, ' ERROR!') + f' {error["msg"]}')
-            print()
 
     def _valid_test(self) -> None:
 
@@ -434,10 +444,14 @@ class AlienContactLogs():
             else:
                 self._contact_id = ('.' * random.randint(16, 100))
 
+            self._timestamp = None
+
             if random.choice([True, False]):
                 self._location = ('.' * random.randint(0, 2))
             else:
                 self._location = ('.' * random.randint(101, 200))
+
+            self._contact_type = None
 
             if random.choice([True, False]):
                 self._signal_strength = random.uniform(-100.0, -0.1)
@@ -455,9 +469,21 @@ class AlienContactLogs():
                 self._witness_count = random.randint(101, 200)
 
             self._message_received = ('.' * random.randint(501, 600))
+            self._is_verified = None
 
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
+
+    def _specific_test(self) -> None:
+        self._contact_id = None
+        self._timestamp = None
+        self._location = None
+        self._contact_type = None
+        self._signal_strength = None
+        self._duration_minutes = None
+        self._witness_count = None
+        self._message_received = None
+        self._is_verified = None
 
 
 # ----------------------------------------------------------------------------
@@ -467,24 +493,14 @@ class AlienContactLogs():
 class SpaceCrewManagement():
 
     def __init__(self) -> None:
-
-        try:
-            add_exercise_folder_to_path("ex2")
-            from space_crew import (SpaceMission, CrewMember, Rank)
-
-        except ImportError as e:
-            print(color(5, f' ERROR! Could not import Ex2 — {e}'))
-        except Exception as e:
-            print(color(5, f' ERROR! {e}'))
-
-            self._mission_id: str = None
-            self._mission_name: str = None
-            self._destination: str = None
-            self._launch_date: datetime = None
-            self._duration_days: int = None
-            self._crew: List[CrewMember] = None
-            self._mission_status: str = None
-            self._budget_millions: float = None
+        self._mission_id: str = None
+        self._mission_name: str = None
+        self._destination: str = None
+        self._launch_date: datetime = None
+        self._duration_days: int = None
+        self._crew: List[CrewMember] = None
+        self._mission_status: str = None
+        self._budget_millions: float = None
 
     def run_test(self) -> None:
         """Run one valid test and one invalid test"""
@@ -492,7 +508,7 @@ class SpaceCrewManagement():
         try:
             print()
             print(" " + "-" * 60)
-            print(color(4, ' 🚀 Exercise 2: Space Crew Management'))
+            print(color(7, ' 🚀 Exercise 2: Space Crew Management'))
             print(" " + "-" * 60)
 
             print()
@@ -506,6 +522,14 @@ class SpaceCrewManagement():
             print(" " + "-" * 60)
             self._invalid_test()
             self.space_crew_management()
+
+            print()
+            print(color(3, ' Testing Station'))
+            print(" " + "-" * 60)
+            self._specific_test()
+            #self.space_crew_management()
+            print(' Uncomment to use')
+            print()
 
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
@@ -528,12 +552,11 @@ class SpaceCrewManagement():
         except ValidationError as e:
             for error in e.errors():
                 print(color(5, ' ERROR!') + f' {error["msg"]}')
-            print()
 
     def _valid_test(self) -> None:
 
         try:
-            mission = random.choice(list(Missions))
+            mission = random.choice(list(Missions)).value
 
             crew_size = random.randint(3, 8)
             crew_list: list = []
@@ -563,50 +586,53 @@ class SpaceCrewManagement():
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
 
+    def _specific_test(self) -> None:
+        self._mission_id = None
+        self._mission_name = None
+        self._destination = None
+        self._launch_date = None
+        self._duration_days = None
+        self._crew = None
+        self._mission_status = None
+        self._budget_millions = None
+
 
 # ----------------------------------------------------------------------------
 #  Tester entry point
 # ---------------------------------------------------------------------------
 
-class CosmicData:
+def cosmic_data() -> None:
+    """Interactive UI for choice."""
 
-    def cosmic_data(self) -> None:
-        """Interactive UI fro choice."""
+    print()
+    print(" " + "-" * 60)
+    print(color(3, ' 💫 WELCOME TO COSMIC DATA!'))
+    print(" " + "-" * 60)
+    print(" This program will help you test the exercises of this module.")
+    print(" Which exercise would you like to test?")
+    print()
 
-        ssd = SpaceStationData()
-        acl = AlienContactLogs()
-        scm = SpaceCrewManagement()
+    print(color(7, f" {'n.':<5}{'Exercise':<30}{'Description'}"))
+    print(" " + "-" * 60)
+    print(f" {'0':<5}{'Space Station Data':<30}"
+          "Basic Pydantic")
+    print(f" {'1':<5}{'Alien Contact Logs':<30}"
+          "Custom validation")
+    print(f" {'2':<5}{'Space Crew Management':<30}"
+          "Nested Pydantic")
+    print()
 
-        print()
-        print(" " + "-" * 60)
-        print(color(3, ' 💫 WELCOME TO COSMIC DATA!'))
-        print(" " + "-" * 60)
-        print(" This program will help you test the exercises of this module.")
-        print(" Which exercise would you like to test?")
-        print()
+    choice = input(color(3, ' 💫 Enter your choice (0/1/2): '))
 
-        print(color(7, f" {'n.':<5}{'Exercise':<30}{'Description'}"))
-        print(" " + "-" * 60)
-        print(f" {'0':<5}{'Space Station Data':<30}"
-              "Basic Pydantic")
-        print(f" {'1':<5}{'Alien Contact Logs':<30}"
-              "Custom validation")
-        print(f" {'2':<5}{'Space Crew Management':<30}"
-              "Nested Pydantic")
-        print()
-
-        choice = input(color(3, ' 💫 Enter your choice (0/1/2): '))
-
-        if choice == "0":
-            ssd.run_test()
-        elif choice == "1":
-            acl.run_test()
-        elif choice == "2":
-            scm.run_test()
-        else:
-            print(color(5, ' ERROR! Invalid choice! Please enter 0, 1, or 2'))
+    if choice == "0":
+        SpaceStationData().run_test()
+    elif choice == "1":
+        AlienContactLogs().run_test()
+    elif choice == "2":
+        SpaceCrewManagement().run_test()
+    else:
+        print(color(5, ' ERROR! Invalid choice! Please enter 0, 1, or 2'))
 
 
 if __name__ == "__main__":
-    cd = CosmicData()
-    cd.cosmic_data()
+    cosmic_data()
