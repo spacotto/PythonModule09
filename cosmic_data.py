@@ -272,7 +272,7 @@ class SpaceStationData():
             self._station_id = f'{station[0]}{random.randint(1, 100):03d}'
             self._name = station[1]
             self._crew_size = random.randint(1, 20)
-            self._power_level = random.uniform(0.0,1 100.0)
+            self._power_level = random.uniform(0.0, 100.0)
             self._oxygen_level = random.uniform(0.0, 100.0)
             self._last_maintenance = datetime.now()
             self._is_operational = random.choice([True, False])
@@ -337,7 +337,7 @@ class AlienContactLogs():
         self._location: str = None
         self._contact_type: ContactType = None
         self._signal_strength: float = None
-        self._duration_minutes: int = None)
+        self._duration_minutes: int = None
         self._witness_count: int = None
         self._message_received: str = None
         self._is_verified: bool = None
@@ -477,14 +477,14 @@ class SpaceCrewManagement():
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
 
-            mission_id: str = None
-            mission_name: str = None
-            destination: str = None
-            launch_date: datetime = None
-            duration_days: int = None
-            crew: List[CrewMember] = None
-            mission_status: str = None
-            budget_millions: float = None
+            self._mission_id: str = None
+            self._mission_name: str = None
+            self._destination: str = None
+            self._launch_date: datetime = None
+            self._duration_days: int = None
+            self._crew: List[CrewMember] = None
+            self._mission_status: str = None
+            self._budget_millions: float = None
 
     def run_test(self) -> None:
         """Run one valid test and one invalid test"""
@@ -511,44 +511,55 @@ class SpaceCrewManagement():
             print(color(5, f' ERROR! {e}'))
 
     def space_crew_management(self) -> None:
-
+        """Try to print the content of the class"""
         try:
 
+            sm = SpaceMission(
+                mission_id=self._mission_id,
+                mission_name=self._mission_name,
+                destination=self._destination,
+                launch_date=self._launch_date,
+                duration_days=self._duration_days,
+                crew=self._crew,
+                mission_status=self._mission_status,
+                budget_millions=self._budget_millions,
+                )
+
+        except ValidationError as e:
+            for error in e.errors():
+                print(color(5, ' ERROR!') + f' {error["msg"]}')
             print()
-            print(" " + "-" * 60)
-            print(color(4, ' 🚀 Exercise 2: Space Crew Management'))
-            print(" " + "-" * 60)
 
-            try:
+    def _valid_test(self) -> None:
 
-                mission = random.choice(list(Missions))
+        try:
+            mission = random.choice(list(Missions))
 
-                crew_size = random.randint(3, 8)
-                crew: list = []
+            crew_size = random.randint(3, 8)
+            crew_list: list = []
 
-                has_commander = False
-                for j in range(crew_size):
-                    member_id = f"CM{str(i*10 + j + 1).zfill(3)}"
-                    member = self.generate_crew_member(member_id)
+            self._mission_id = mission[0]
+            self._mission_name = mission[1]
+            self._destination = mission[2]
+            self._launch_date = datetime.now()
+            self._duration_days = random.randint(1, 3650)
+            self._crew = crew_list
+            self._mission_status = 'ongoing'
+            self._budget_millions = random.uniform(1.0, 10000.0)
 
-                sm = SpaceMission(
-                    mission_id=mission[0],
-                    mission_name=mission[1],
-                    destination=mission[2],
-                    launch_date=datetime.now(),
-                    duration_days=random.randint(1, 3650),
-                    crew=crew_list,
-                    mission_status='',
-                    budget_millions=random.uniform(1.0, 10000.0),
-                    )
+        except Exception as e:
+            print(color(5, f' ERROR! {e}'))
 
-            except ValidationError as e:
-                for error in e.errors():
-                    print(color(5, ' ERROR!') + f' {error["msg"]}')
-                print()
+    def _invalid_test(self) -> None:
 
-        except ImportError as e:
-            print(color(5, f' ERROR! Could not import Ex2 — {e}'))
+        try:
+            self._mission_id = None
+            self._mission_name = None
+            self._destination = None
+            self._duration_days = None
+            self._crew = None
+            self._budget_millions = None
+
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
 
@@ -587,11 +598,11 @@ class CosmicData:
         choice = input(color(3, ' 💫 Enter your choice (0/1/2): '))
 
         if choice == "0":
-            ssd.space_station_data()
+            ssd.run_test()
         elif choice == "1":
-            acl.alien_contact_logs()
+            acl.run_test()
         elif choice == "2":
-            scm.space_crew_management()
+            scm.run_test()
         else:
             print(color(5, ' ERROR! Invalid choice! Please enter 0, 1, or 2'))
 
