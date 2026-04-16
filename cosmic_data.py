@@ -11,13 +11,21 @@ Usage: python3 cosmic_data.py
 #  Import
 # ----------------------------------------------------------------------------
 
-import os
-import sys
-import random
-from enum import Enum
-from typing import Dict
-from datetime import datetime
-from pydantic import ValidationError
+try:
+    import os
+    import sys
+    import random
+    from enum import Enum
+    from typing import Dict, List
+    from datetime import datetime
+    from pydantic import ValidationError
+
+except ModuleNotFoundError as e:
+    print(f'\n \033[1;95mERROR!\033[0m {e}')
+    print(' python3 -m venv .venv')
+    print(' source .venv/bin/activate')
+    print(' pip install -r requirements.txt\n')
+    exit()
 
 
 def pathfinder(folder_name: str) -> None:
@@ -34,9 +42,9 @@ for F in FOLDERS:
     except ImportError as e:
         print(f' ERROR! Could not import  {F} — {e}')
 
-from space_station import (SpaceStation)
-from alien_contact import (AlienContact, ContactType)
-from space_crew import (SpaceMission, CrewMember, Rank)
+from space_station import (SpaceStation)  # noqa: E402
+from alien_contact import (AlienContact, ContactType)  # noqa: E402
+from space_crew import (SpaceMission, CrewMember, Rank)  # noqa: E402
 
 
 # ----------------------------------------------------------------------------
@@ -223,7 +231,7 @@ class SpaceStationData():
             print(color(3, ' Testing Station'))
             print(" " + "-" * 60)
             self._specific_test()
-            #self.space_station_data()
+            # self.space_station_data()
             print(' Uncomment to use')
             print()
 
@@ -233,7 +241,6 @@ class SpaceStationData():
     def space_station_data(self) -> None:
         """Try to print the content of the class"""
         try:
-            station_number = random.randint(1, 100)
             ss = SpaceStation(
                 station_id=self._station_id,
                 name=self._name,
@@ -372,7 +379,7 @@ class AlienContactLogs():
             print(color(3, ' Testing Contact'))
             print(" " + "-" * 60)
             self._specific_test()
-            #self.alien_contact_logs()
+            # self.alien_contact_logs()
             print(' Uncomment to use')
             print()
 
@@ -423,7 +430,7 @@ class AlienContactLogs():
 
         try:
             self._contact_id = (f'AC_{random.randint(1900, 2026)}_'
-                               f'{random.randint(1, 100):03d}')
+                                f'{random.randint(1, 100):03d}')
             self._timestamp = datetime.now()
             self._location = random.choice(list(Locations)).value
             self._contact_type = random.choice(list(ContactType))
@@ -431,7 +438,7 @@ class AlienContactLogs():
             self._duration_minutes = random.randint(1, 1440)
             self._witness_count = random.randint(3, 100)
             self._message_received = random.choice(list(Messages)).value
-            self._is_verified = is_verified=True
+            self._is_verified = True
 
         except Exception as e:
             print(color(5, f' ERROR! {e}'))
@@ -524,10 +531,10 @@ class SpaceCrewManagement():
             self.space_crew_management()
 
             print()
-            print(color(3, ' Testing Station'))
+            print(color(3, ' Testing Mission'))
             print(" " + "-" * 60)
             self._specific_test()
-            #self.space_crew_management()
+            # self.space_crew_management()
             print(' Uncomment to use')
             print()
 
@@ -549,6 +556,35 @@ class SpaceCrewManagement():
                 budget_millions=self._budget_millions,
                 )
 
+            # --- Print General Mission Info
+            for k, v in sm.model_dump().items():
+                if k == 'crew':
+                    continue
+
+                label = k.replace('_', ' ').title()
+
+                if k == 'launch_date':
+                    display_value = v.strftime("%Y-%m-%d %H:%M:%S")
+                elif k == 'duration_days':
+                    display_value = f'{v} days'
+                elif k == 'budget_millions':
+                    display_value = f'${v:,.2f}M'
+                else:
+                    display_value = str(v)
+
+                print(f' {color(7, label):<30}{display_value}')
+
+            # Print Crew List last
+            print(f'\n {color(6, "Crew Members"):<30}')
+            for member in sm.crew:
+                # Format: Name (Rank) - Specialization [Exp: X years]
+                member_info = (
+                    f'{member.name} ({color(4, member.rank.value)}) '
+                    f'- {member.specialization} '
+                    f'[{member.years_experience} yrs exp]'
+                )
+                print(f' - {member_info}')
+
         except ValidationError as e:
             for error in e.errors():
                 print(color(5, ' ERROR!') + f' {error["msg"]}')
@@ -559,14 +595,13 @@ class SpaceCrewManagement():
             mission = random.choice(list(Missions)).value
 
             crew_size = random.randint(3, 8)
-            crew_list: list = []
 
             self._mission_id = mission[0]
             self._mission_name = mission[1]
             self._destination = mission[2]
             self._launch_date = datetime.now()
             self._duration_days = random.randint(1, 3650)
-            self._crew = crew_list
+            self._crew = self._create_crew(crew_size)
             self._mission_status = 'ongoing'
             self._budget_millions = random.uniform(1.0, 10000.0)
 
@@ -596,6 +631,45 @@ class SpaceCrewManagement():
         self._mission_status = None
         self._budget_millions = None
 
+    def _create_crew(self, crew_size: int) -> CrewMember:
+        """Create crew members."""
+        crew: list = []
+
+        first_name = random.choice(list(FirstNames)).value
+        last_name = random.choice(list(LastNames)).value
+        m_id = (first_name[0] + last_name[:9]).lower()
+
+        crew_member = CrewMember(
+            member_id=m_id,
+            name=f'{first_name} {last_name}',
+            rank=random.choice([Rank.COMMANDER, Rank.CAPTAIN]),
+            age=random.randint(18, 80),
+            specialization=random.choice(list(Specializations)),
+            years_experience=random.randint(0, 50),
+            is_active=True,
+        )
+
+        crew.append(crew_member)
+
+        for _ in range(crew_size - 1):
+            first_name = random.choice(list(FirstNames)).value
+            last_name = random.choice(list(LastNames)).value
+            m_id = (first_name[0] + last_name[:9]).lower()
+
+            crew_member = CrewMember(
+                member_id=m_id,
+                name=f'{first_name} {last_name}',
+                rank=random.choice(list(Rank)),
+                age=random.randint(18, 80),
+                specialization=random.choice(list(Specializations)),
+                years_experience=random.randint(0, 50),
+                is_active=True,
+            )
+
+            crew.append(crew_member)
+
+        return crew
+
 
 # ----------------------------------------------------------------------------
 #  Tester entry point
@@ -604,34 +678,41 @@ class SpaceCrewManagement():
 def cosmic_data() -> None:
     """Interactive UI for choice."""
 
-    print()
-    print(" " + "-" * 60)
-    print(color(3, ' 💫 WELCOME TO COSMIC DATA!'))
-    print(" " + "-" * 60)
-    print(" This program will help you test the exercises of this module.")
-    print(" Which exercise would you like to test?")
-    print()
+    if sys.prefix == sys.base_prefix:
+        print(color(5, ' ERROR! You must use a venv!'))
+        print(' python3 -m venv .venv')
+        print(' source .venv/bin/activate')
+        print(' pip install -r requirements.txt')
 
-    print(color(7, f" {'n.':<5}{'Exercise':<30}{'Description'}"))
-    print(" " + "-" * 60)
-    print(f" {'0':<5}{'Space Station Data':<30}"
-          "Basic Pydantic")
-    print(f" {'1':<5}{'Alien Contact Logs':<30}"
-          "Custom validation")
-    print(f" {'2':<5}{'Space Crew Management':<30}"
-          "Nested Pydantic")
-    print()
-
-    choice = input(color(3, ' 💫 Enter your choice (0/1/2): '))
-
-    if choice == "0":
-        SpaceStationData().run_test()
-    elif choice == "1":
-        AlienContactLogs().run_test()
-    elif choice == "2":
-        SpaceCrewManagement().run_test()
     else:
-        print(color(5, ' ERROR! Invalid choice! Please enter 0, 1, or 2'))
+        print()
+        print(" " + "-" * 60)
+        print(color(3, ' 💫 WELCOME TO COSMIC DATA!'))
+        print(" " + "-" * 60)
+        print(" This program will help you test the exercises of this module.")
+        print(" Which exercise would you like to test?")
+
+        print()
+        print(color(7, f" {'n.':<5}{'Exercise':<30}{'Description'}"))
+        print(" " + "-" * 60)
+        print(f" {'0':<5}{'Space Station Data':<30}"
+              "Basic Pydantic")
+        print(f" {'1':<5}{'Alien Contact Logs':<30}"
+              "Custom validation")
+        print(f" {'2':<5}{'Space Crew Management':<30}"
+              "Nested Pydantic")
+
+        print()
+        choice = input(color(3, ' 💫 Enter your choice (0/1/2): '))
+
+        if choice == "0":
+            SpaceStationData().run_test()
+        elif choice == "1":
+            AlienContactLogs().run_test()
+        elif choice == "2":
+            SpaceCrewManagement().run_test()
+        else:
+            print(color(5, ' ERROR! Invalid choice! Please enter 0, 1, or 2'))
 
 
 if __name__ == "__main__":
