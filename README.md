@@ -5,7 +5,7 @@
 ## Instructions
 
 ```bash
-https://github.com/spacotto/Python-Modules.git
+https://github.com/spacotto/PythonModule09.git
 ```
 
 Test the exercises with the tester:
